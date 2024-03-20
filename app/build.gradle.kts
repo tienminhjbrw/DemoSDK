@@ -38,5 +38,5 @@ dependencies {
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
 
-    implementation ("com.facebook.android:facebook-login:latest.release")
+    implementation ("com.facebook.android:facebook-login:8.1.0")
 }
