@@ -5,17 +5,20 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Base64;
 import android.util.Log;
-import android.widget.TextView;
+import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
+import com.appsflyer.AFInAppEventParameterName;
+import com.appsflyer.AFInAppEventType;
+import com.appsflyer.AppsFlyerLib;
+import com.appsflyer.attribution.AppsFlyerRequestListener;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
@@ -28,6 +31,8 @@ import com.facebook.login.widget.LoginButton;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
     public LoginButton loginButton;
@@ -53,6 +58,11 @@ public class MainActivity extends AppCompatActivity {
 
         getKeyhash(getApplicationContext());
 
+        Button button = findViewById(R.id.test_btn);
+        Button button2 = findViewById(R.id.test_btn2);
+        Button button3 = findViewById(R.id.test_btn3);
+        Button button4 = findViewById(R.id.test_btn4);
+
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
@@ -64,8 +74,6 @@ public class MainActivity extends AppCompatActivity {
                 params.putString(AppEventsConstants.EVENT_PARAM_CONTENT_TYPE, "product");
                 params.putString(AppEventsConstants.EVENT_PARAM_CONTENT, "[{\"id\": \"1234\", \"quantity\": 2}, {\"id\": \"5678\", \"quantity\": 1}]");
                 params.putString("MyParam", "this is the tested param");
-
-                Log.i("test", "logging");
 
                 logger.logEvent(AppEventsConstants.EVENT_NAME_PURCHASED,
                         50,
@@ -82,6 +90,120 @@ public class MainActivity extends AppCompatActivity {
             public void onError(FacebookException exception) {
             }
         });
+
+        // Appflyer
+        AppsFlyerLib.getInstance().init("C4xBYd7TwxFggGyocWvQA3", null, this);
+        AppsFlyerLib.getInstance().setDebugLog(true);
+        AppsFlyerLib.getInstance().start(getApplicationContext(), "C4xBYd7TwxFggGyocWvQA3", new AppsFlyerRequestListener() {
+            @Override
+            public void onSuccess() {
+                Log.d("APPFLYER", "Launch sent successfully, got 200 response code from server");
+            }
+
+            @Override
+            public void onError(int i, @NonNull String s) {
+                Log.d("APPFLYER", "Launch failed to be sent:\n" +
+                        "Error code: " + i + "\n"
+                        + "Error description: " + s);
+            }
+        });
+
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Map<String, Object> eventValues = new HashMap<String, Object>();
+                eventValues.put(AFInAppEventParameterName.PRICE, "200000");
+                eventValues.put(AFInAppEventParameterName.CONTENT_TYPE, "test_content_type");
+                eventValues.put(AFInAppEventParameterName.CONTENT_ID, "test_content_id");
+                eventValues.put(AFInAppEventParameterName.REVENUE, 1);
+
+                AppsFlyerLib.getInstance().logEvent(getApplicationContext(),
+                        AFInAppEventType.CONTENT_VIEW, eventValues, new AppsFlyerRequestListener() {
+                            @Override
+                            public void onSuccess() {
+                                Log.d("APPFLYER", "Event contentview sent successfully");
+                            }
+
+                            @Override
+                            public void onError(int i, @NonNull String s) {
+                                Log.d("APPFLYER", "Event contentview failed to be sent:\nError code: " + i + "\nError description: " + s);
+                            }
+                        });
+            }
+        });
+
+        button2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Map<String, Object> eventValues1 = new HashMap<String, Object>();
+                eventValues1.put(AFInAppEventParameterName.CONTENT_ID, "test_content_id2");
+                eventValues1.put(AFInAppEventParameterName.CONTENT_TYPE, "test_content_type2");
+                eventValues1.put(AFInAppEventParameterName.CURRENCY, "VND");
+                eventValues1.put(AFInAppEventParameterName.REVENUE, 100000);
+
+                AppsFlyerLib.getInstance().logEvent(getApplicationContext(),
+                        AFInAppEventType.ADD_TO_CART, eventValues1, new AppsFlyerRequestListener() {
+                            @Override
+                            public void onSuccess() {
+                                Log.d("APPFLYER", "Event add to cart sent successfully");
+                            }
+
+                            @Override
+                            public void onError(int i, @NonNull String s) {
+                                Log.d("APPFLYER", "Event add to cart failed to be sent:\nError code: " + i + "\nError description: " + s);
+                            }
+                        });
+            }
+        });
+
+        button3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Map<String, Object> eventValues2 = new HashMap<String, Object>();
+                eventValues2.put("my_readings_1", "my_data");
+                eventValues2.put("my_readings_2", 12345);
+                eventValues2.put(AFInAppEventParameterName.REVENUE, 1);
+
+                AppsFlyerLib.getInstance().logEvent(getApplicationContext(),
+                        "my_event2", eventValues2, new AppsFlyerRequestListener() {
+                            @Override
+                            public void onSuccess() {
+                                Log.d("APPFLYER", "My event sent successfully");
+                            }
+
+                            @Override
+                            public void onError(int i, @NonNull String s) {
+                                Log.d("APPFLYER", "My event revenue failed to be sent:\nError code: " + i + "\nError description: " + s);
+                            }
+                        });
+            }
+        });
+
+        button4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Map<String, Object> eventValues2 = new HashMap<String, Object>();
+                eventValues2.put(AFInAppEventParameterName.AD_REVENUE_AD_SIZE, "ad_size");
+                eventValues2.put(AFInAppEventParameterName.AD_REVENUE_NETWORK_NAME, "ad_networkname");
+                eventValues2.put(AFInAppEventParameterName.REVENUE, 1);
+
+                AppsFlyerLib.getInstance().logEvent(getApplicationContext(),
+                        AFInAppEventType.AD_CLICK, eventValues2, new AppsFlyerRequestListener() {
+                            @Override
+                            public void onSuccess() {
+                                Log.d("APPFLYER", "Event AD sent successfully");
+                            }
+
+                            @Override
+                            public void onError(int i, @NonNull String s) {
+                                Log.d("APPFLYER", "Event AD failed to be sent:\nError code: " + i + "\nError description: " + s);
+                            }
+                        });
+            }
+        });
+
+        String m_androidId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+        Log.i("id_may", m_androidId);
     }
 
     public static void getKeyhash(Context context) {

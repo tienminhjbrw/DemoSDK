@@ -39,4 +39,7 @@ dependencies {
     androidTestImplementation(libs.espresso.core)
 
     implementation ("com.facebook.android:facebook-login:8.1.0")
+
+    implementation ("com.appsflyer:af-android-sdk:6.13.0")
+    implementation ("com.android.installreferrer:installreferrer:2.2")
 }
