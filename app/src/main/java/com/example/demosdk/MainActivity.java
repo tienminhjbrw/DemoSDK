@@ -5,11 +5,14 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.Settings;
+import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -28,6 +31,10 @@ import com.facebook.appevents.AppEventsConstants;
 import com.facebook.appevents.AppEventsLogger;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -43,6 +50,8 @@ public class MainActivity extends AppCompatActivity {
     private static final String PUBLICPROFILE = "public_profile";
     public CallbackManager callbackManager = CallbackManager.Factory.create();
     public AppEventsLogger logger;
+
+    private FirebaseAnalytics mFirebaseAnalytics;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +71,9 @@ public class MainActivity extends AppCompatActivity {
         Button button2 = findViewById(R.id.test_btn2);
         Button button3 = findViewById(R.id.test_btn3);
         Button button4 = findViewById(R.id.test_btn4);
+        Button buttonGG = findViewById(R.id.btn_gg_analytics);
+        EditText editText = findViewById(R.id.edt_test);
+        Button buttonCR = findViewById(R.id.btn_crashlytics);
 
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
@@ -204,6 +216,56 @@ public class MainActivity extends AppCompatActivity {
 
         String m_androidId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
         Log.i("id_may", m_androidId);
+
+        // Firebase analytics
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+        buttonGG.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String text = editText.getText().toString();
+
+                if (TextUtils.isEmpty(text.trim())) {
+                    Toast.makeText(MainActivity.this, "type something first!", Toast.LENGTH_SHORT).show();
+                } else {
+                    Bundle bundle = new Bundle();
+                    bundle.putString(FirebaseAnalytics.Param.ITEM_ID, "12345");
+                    bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, text);
+                    bundle.putString("MyCustomParam", "this is the test value");
+                    mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SHARE, bundle);
+                    mFirebaseAnalytics.logEvent("MyCustomEvent", bundle);
+                    Toast.makeText(MainActivity.this, "Open firebase to see the result", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        //Cloud Message
+        FirebaseMessaging.getInstance().getToken()
+                .addOnCompleteListener(new OnCompleteListener<String>() {
+                    @Override
+                    public void onComplete(@NonNull Task<String> task) {
+                        if (!task.isSuccessful()) {
+                            Log.w("TOKENAPP", "Fetching FCM registration token failed", task.getException());
+                            return;
+                        }
+                        // Get new FCM registration token
+                        String token = task.getResult();
+                        Log.d("TOKENAPP", token);
+                    }
+                });
+
+        //Crashlytics
+        buttonCR.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(MainActivity.this, "Wait 5 second to get crashed, open tab Crashlytics to see the result", Toast.LENGTH_SHORT).show();
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        throw new RuntimeException("Test Crash lan 4"); // Force a crash
+                    }
+                }, 5000);
+            }
+        });
     }
 
     public static void getKeyhash(Context context) {

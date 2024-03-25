@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "925240425308",
+    "project_id": "test-sdk-b3f16",
+    "storage_bucket": "test-sdk-b3f16.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:925240425308:android:8d297dab1fd9a80d995f99",
+        "android_client_info": {
+          "package_name": "com.example.demosdk"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAX_D3kDtfex1GpAhyi9yyLRLn1XfEVZ7Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
