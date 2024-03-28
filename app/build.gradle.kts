@@ -49,4 +49,8 @@ dependencies {
     implementation("com.google.firebase:firebase-analytics")
     implementation("com.google.firebase:firebase-crashlytics")
     implementation("com.google.firebase:firebase-messaging")
+
+    implementation ("com.tiktok.open.sdk:tiktok-open-sdk-core:2.3.0")
+    implementation ("com.tiktok.open.sdk:tiktok-open-sdk-auth:2.3.0")   // to use authorization api
+    implementation ("com.tiktok.open.sdk:tiktok-open-sdk-share:2.3.0")    // to use share api
 }

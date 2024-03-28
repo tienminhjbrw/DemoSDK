@@ -35,6 +35,9 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.tiktok.open.sdk.auth.AuthApi;
+import com.tiktok.open.sdk.auth.AuthRequest;
+import com.tiktok.open.sdk.auth.utils.PKCEUtils;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -264,6 +267,23 @@ public class MainActivity extends AppCompatActivity {
                         throw new RuntimeException("Test Crash lan 4"); // Force a crash
                     }
                 }, 5000);
+            }
+        });
+
+
+        //Tiktok
+        Button buttonTT = findViewById(R.id.btn_tiktok);
+        buttonTT.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AuthApi authApi = new AuthApi(MainActivity.this);
+                String clientKey = "awx6tnphv7g0lfxt";
+                String scope = "user.info.basic";
+                String redirectUri = "http://www.example.com/demosdk";
+                String codeVerifier = PKCEUtils.INSTANCE.generateCodeVerifier();
+                AuthRequest authRequest = new AuthRequest(clientKey, scope, redirectUri, codeVerifier, false, null, null);
+
+                authApi.authorize(authRequest, AuthApi.AuthMethod.TikTokApp);
             }
         });
     }

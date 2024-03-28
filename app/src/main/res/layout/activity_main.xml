@@ -25,38 +25,50 @@
 
     </LinearLayout>
 
-    <LinearLayout
+    <TableLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
         android:gravity="center"
         android:orientation="vertical">
 
-        <Button
-            android:id="@+id/test_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Content view" />
+        <TableRow>
 
-        <Button
-            android:id="@+id/test_btn2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Purchase" />
+            <Button
+                android:id="@+id/test_btn"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="Content view" />
 
-        <Button
-            android:id="@+id/test_btn3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="My event" />
+            <Button
+                android:id="@+id/test_btn2"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="Purchase" />
 
-        <Button
-            android:id="@+id/test_btn4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Advertisement" />
+        </TableRow>
 
-    </LinearLayout>
+        <TableRow>
+
+            <Button
+                android:id="@+id/test_btn3"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="My event" />
+
+            <Button
+                android:id="@+id/test_btn4"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="Advertisement" />
+
+        </TableRow>
+
+    </TableLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -97,4 +109,20 @@
             android:text="Test Crashlytics" />
 
     </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btn_tiktok"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Open with Tiktok" />
+
+    </LinearLayout>
+
 </LinearLayout>
